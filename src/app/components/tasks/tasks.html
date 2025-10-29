@@ -1,0 +1,61 @@
+<div class="tasks-container">
+  <!-- 🟩 Formulaire d'ajout -->
+  <form (ngSubmit)="addTask()" class="task-form">
+    <input
+      type="text"
+      [(ngModel)]="newTitle"
+      name="title"
+      placeholder="Titre de la tâche"
+      required
+    />
+
+    <input
+      type="date"
+      [(ngModel)]="newDue"
+      name="due"
+      placeholder="Date"
+    />
+
+    <input
+      type="text"
+      [(ngModel)]="newNotes"
+      name="notes"
+      placeholder="Notes (facultatif)"
+    />
+
+    <button type="submit">Ajouter</button>
+  </form>
+
+  <hr />
+
+  <!-- 🟨 Liste des tâches -->
+  <ul class="tasks-list" *ngIf="tasks$ | async as tasks; else noTasks">
+    <li *ngFor="let t of tasks" [class.done]="t.done">
+      <div class="task-item">
+        <input
+          type="checkbox"
+          [checked]="t.done"
+          (change)="toggleTask(t.id)"
+        />
+
+        <div class="task-content">
+          <span class="task-title">{{ t.title }}</span>
+          <small *ngIf="t.due" class="task-due">📅 {{ t.due }}</small>
+          <p *ngIf="t.notes" class="task-notes">{{ t.notes }}</p>
+        </div>
+
+        <button class="delete-btn" (click)="removeTask(t.id)">✕</button>
+      </div>
+    </li>
+  </ul>
+
+  <!-- 🟧 Message quand aucune tâche -->
+  <ng-template #noTasks>
+    <p class="empty">Aucune tâche pour le moment.</p>
+  </ng-template>
+
+  <!-- 🟥 Bouton pour supprimer les tâches terminées -->
+  <div class="clear-section">
+    <button (click)="clearDoneTasks()">Supprimer les tâches terminées</button>
+  </div>
+</div>
