@@ -1,61 +1,61 @@
+ <!-- Header / Titre -->
+ <header class="app-header">
+  <div class="header-inner">
+    <img src="assets/stylo.png" alt="stylo" class="logo">
+    <div class="title-container">
+      <p class="title-line">Organisateur</p>
+      <p class="title-line">de</p>
+      <p class="title-line">tâches</p>
+    </div>
+  </div>
+</header>
+
+<!-- Conteneur principal -->
 <div class="tasks-container">
-  <!-- 🟩 Formulaire d'ajout -->
+  <!-- Formulaire d'ajout -->
   <form (ngSubmit)="addTask()" class="task-form">
-    <input
-      type="text"
-      [(ngModel)]="newTitle"
-      name="title"
-      placeholder="Titre de la tâche"
-      required
-    />
-
-    <input
-      type="date"
-      [(ngModel)]="newDue"
-      name="due"
-      placeholder="Date"
-    />
-
-    <input
-      type="text"
-      [(ngModel)]="newNotes"
-      name="notes"
-      placeholder="Notes (facultatif)"
-    />
-
+    <input type="text" [(ngModel)]="newTitle" name="title" placeholder="Titre de la tâche" required />
+    <input type="date" [(ngModel)]="newDue" name="due" />
+    <input type="text" [(ngModel)]="newNotes" name="notes" placeholder="Notes (facultatif)" />
     <button type="submit">Ajouter</button>
   </form>
 
   <hr />
 
-  <!-- 🟨 Liste des tâches -->
-  <ul class="tasks-list" *ngIf="tasks$ | async as tasks; else noTasks">
-    <li *ngFor="let t of tasks" [class.done]="t.done">
-      <div class="task-item">
-        <input
-          type="checkbox"
-          [checked]="t.done"
-          (change)="toggleTask(t.id)"
-        />
-
-        <div class="task-content">
-          <span class="task-title">{{ t.title }}</span>
-          <small *ngIf="t.due" class="task-due">📅 {{ t.due }}</small>
-          <p *ngIf="t.notes" class="task-notes">{{ t.notes }}</p>
-        </div>
-
-        <button class="delete-btn" (click)="removeTask(t.id)">✕</button>
-      </div>
-    </li>
-  </ul>
-
-  <!-- 🟧 Message quand aucune tâche -->
-  <ng-template #noTasks>
+  <!-- Liste des tâches -->
+  @if (tasks$ | async; as tasks) {
+    <ul class="tasks-list">
+      @for (t of tasks; track t.id) {
+        <li [class.done]="t.done">
+          <div class="task-item">
+            <input type="checkbox" [checked]="t.done" (change)="toggleTask(t.id)" />
+            <div class="task-content">
+              <span class="task-title">{{ t.title }}</span>
+              @if (t.due) {
+                <small class="task-due">📅 {{ t.due }}</small>
+              }
+              @if (t.notes) {
+                <p class="task-notes">{{ t.notes }}</p>
+              }
+            </div>
+            <button class="delete-btn" (click)="removeTask(t.id)">✕</button>
+          </div>
+        </li>
+      } @empty {
+        <p class="empty">Aucune tâche pour le moment.</p>
+      }
+    </ul>
+  } @else {
     <p class="empty">Aucune tâche pour le moment.</p>
-  </ng-template>
+  }
 
-  <!-- 🟥 Bouton pour supprimer les tâches terminées -->
+  <!-- Bouton supprimer tâches terminées -->
   <div class="clear-section">
     <button (click)="clearDoneTasks()">Supprimer les tâches terminées</button>
   </div>
 </div>
+
+<!-- Footer -->
+<footer>
+  <p>© 2025 Mohammad Aowis</p>
+</footer>
